@@ -128,9 +128,9 @@ def lambda_handler(event, context):
 		params = {'search': 'i-'}
         if(len(list_of_aws_instance_ids) == 0 ):   #skip hitting our API if there's nothing in that region
                 print("Skipping region %s as EC2 returned no instances in that region" % (region['RegionName']))
-            else:
-                R = requests.get(ALERT_LOGIC_API_URL, params=params, headers=HEADERS, auth=(event['apikey'], ''))
-                output = R.json()
+        else:
+            R = requests.get(ALERT_LOGIC_API_URL, params=params, headers=HEADERS, auth=(event['apikey'], ''))
+            output = R.json()
     		#proccess AWS instances looking for matches in Alert Logic (by instance ID)
     		listIndex = 0
     		for listIndex in range(len(list_of_aws_instance_ids)):
