@@ -143,10 +143,10 @@ def lambda_handler(event, context):
 								#get corresponding log sources ID for the instance
 								logID, isWin = get_log_source(output["protectedhosts"][index]["protectedhost"]["metadata"]["ec2_instance_id"],event['apikey'])
 								# call update tags and store httpcode
-								httpCode = update_source_name(tempID,list_of_instance_tags[listIndex],event['apikey'], ec2_instance_id)
+								httpCode = update_source_name(tempID,list_of_instance_tags[listIndex],event['apikey'], list_of_aws_instance_ids[listIndex])
 								# call update to sources DB for LM
 								if logID is not None:
-									httpCodeLog = update_log_source_name(logID, list_of_instance_tags[listIndex], isWin,event['apikey'], ec2_instance_id)
+									httpCodeLog = update_log_source_name(logID, list_of_instance_tags[listIndex], isWin,event['apikey'], list_of_aws_instance_ids[listIndex])
 								if httpCode == 200:
 									number_of_updates = number_of_updates + 1
 								if httpCode == 400 or httpCode == 500:
