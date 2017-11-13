@@ -17,8 +17,8 @@ USE_TAG_DELIMITER = True
 DELIMITER = ":"
 #format AWS tags for Alert Logic consumption and overrite tags on Alert Logic sources
 #use the AWS instance "Name" for Alert Logic source name
-def update_source_name(id, tags, API_KEY):
-	name = ""
+def update_source_name(id, tags, API_KEY, ec2_instance_id):
+	name = ec2_instance_id
 	newTag = ""
 	for tag in tags:
 		if tag['Key'] != 'Name':
@@ -56,8 +56,8 @@ def get_log_source(instance_id, API_KEY):
 			return output['sources'][0]['eventlog']['id'], True
 	return None, False
 
-def update_log_source_name(id, tags, isWin, API_KEY):
-	name = ""
+def update_log_source_name(id, tags, isWin, API_KEY, ec2_instance_id):
+	name = ec2_instance_id
 	newTag = ""
 	for tag in tags:
 		if tag['Key'] != 'Name':
@@ -143,10 +143,10 @@ def lambda_handler(event, context):
 								#get corresponding log sources ID for the instance
 								logID, isWin = get_log_source(output["protectedhosts"][index]["protectedhost"]["metadata"]["ec2_instance_id"],event['apikey'])
 								# call update tags and store httpcode
-								httpCode = update_source_name(tempID,list_of_instance_tags[listIndex],event['apikey'])
+								httpCode = update_source_name(tempID,list_of_instance_tags[listIndex],event['apikey'], ec2_instance_id)
 								# call update to sources DB for LM
 								if logID is not None:
-									httpCodeLog = update_log_source_name(logID, list_of_instance_tags[listIndex], isWin,event['apikey'])
+									httpCodeLog = update_log_source_name(logID, list_of_instance_tags[listIndex], isWin,event['apikey'], ec2_instance_id)
 								if httpCode == 200:
 									number_of_updates = number_of_updates + 1
 								if httpCode == 400 or httpCode == 500:
